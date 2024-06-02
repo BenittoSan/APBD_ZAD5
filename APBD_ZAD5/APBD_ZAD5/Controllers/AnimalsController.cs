@@ -33,7 +33,8 @@ public class AnimalsController : ControllerBase
     public ActionResult CreateAnimal(Animal animal)
     {
         var affectedCount = _animalServices.CreateAnimal(animal);
-        return StatusCode(StatusCodes.Status201Created);
+
+        return Ok("affected rows : " + affectedCount);
     }
 
     [HttpPut("{id:int}")]
