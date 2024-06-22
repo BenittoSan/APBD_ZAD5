@@ -1,5 +1,7 @@
 using System.Data.SqlClient;
 using APBD_ZAD5.DTOs;
+using APBD_ZAD5.DTOs.Request;
+using APBD_ZAD5.DTOs.Response;
 using APBD_ZAD5.Models;
 using APBD_ZAD5.Repositories;
 using APBD_ZAD5.Services;
@@ -21,16 +23,17 @@ public class AnimalsController : ControllerBase
     }
     
     [HttpGet("order")]
-    public ActionResult<IEnumerator<AnimalDTO>> GetAnimals(string order)
+    public ActionResult<IEnumerator<GetAnimalsDTO>> GetAnimals(string order)
     {
-        IEnumerable<Animal> animals =  _animalServices.GetAnimals(order);
+       var  animals =  _animalServices.GetAnimals(order);
+       
 
-        return Ok();
+        return Ok(animals);
 
     }
 
     [HttpPost]
-    public ActionResult CreateAnimal(Animal animal)
+    public ActionResult CreateAnimal(CreateAnimalDTO animal)
     {
         var affectedCount = _animalServices.CreateAnimal(animal);
 
@@ -38,17 +41,17 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult UpadeteAnimal(int id, Animal animal)
+    public ActionResult UpadeteAnimal(int id, [FromBody]UpdateAnimalDTO animal)
     {
-        var affectedCount = _animalServices.UpdateAnimal(animal);
-        return NoContent();
+        var affectedCount = _animalServices.UpdateAnimal(animal,id);
+        return Ok( new {affectedCount} );
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult DeleteAniaml(int id)
     {
         var affectedCount = _animalServices.DeleteAnimal(id);
-        return NoContent();
+        return Ok(new {affectedCount});
     }
 
 }

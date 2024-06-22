@@ -1,4 +1,5 @@
 using System.Data.SqlClient;
+using APBD_ZAD5.DTOs.Request;
 using APBD_ZAD5.Models;
 
 namespace APBD_ZAD5.Repositories;
@@ -15,17 +16,13 @@ public class AnimalRepository : IAnimalRepository
     
     public IEnumerable<Animal> getAnimals(string orderCol)
     {
-        /*bool isColumnName = false;
-        if ((orderCol.Equals("name") || orderCol.Equals("description") || orderCol.Equals("category") ||
-             orderCol.Equals("area "))) {
-            isColumnName = true;
-            }
-        else
-        {
-            isColumnName = false;
-            orderCol = "name";
-        }*/
+        var validColumns = new HashSet<String> { "Name", "Description", "Category", "Area" };
 
+        if (!validColumns.Contains(orderCol))
+        {
+            orderCol = "Name";
+        }
+        
         using var con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
          con.Open();
 
@@ -33,10 +30,7 @@ public class AnimalRepository : IAnimalRepository
         cmd.Connection = con;
         
         cmd.CommandText = $"SELECT Id,Name,Description,Category,Area FROM ANIMALS ORDER BY {orderCol}";
-
         
-         
-
         var dr =  cmd.ExecuteReader();
         var animals = new List<Animal>();
 
@@ -60,7 +54,7 @@ public class AnimalRepository : IAnimalRepository
 
    
 
-    public int CreateAnimal(Animal animal)
+    public int CreateAnimal(CreateAnimalDTO animal)
     {
         using var con = new SqlConnection("data source=SpaceShip;initial catalog=APBD;trusted_connection=true");
         con.Open();
@@ -70,7 +64,7 @@ public class AnimalRepository : IAnimalRepository
 
         
         cmd.CommandText =
-            "Insert into Animals (Name, Description, Category, Area) values ('@Name','@Description','@Category','@Area')";
+            "Insert into Animals (Name, Description, Category, Area) values (@Name,@Description,@Category,@Area)";
         cmd.Parameters.AddWithValue("@Name", animal.Name);
         cmd.Parameters.AddWithValue("@Description", animal.Description);
         cmd.Parameters.AddWithValue("@Category", animal.Category);
@@ -98,7 +92,7 @@ public class AnimalRepository : IAnimalRepository
         return affectedCount;
     }
 
-    public int UpdateAnimal(Animal animal)
+    public int UpdateAnimal(UpdateAnimalDTO animal, int id)
     {
         using var con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         con.Open();
@@ -108,7 +102,7 @@ public class AnimalRepository : IAnimalRepository
 
         cmd.CommandText =
             "UPDATE ANIMALS SET Name=@Name,Description=@Desctription,Category=@Category,Area=@Area WHERE Id= @IdAnimal";
-        cmd.Parameters.AddWithValue("@IdAnimal", animal.IdAnimal);
+        cmd.Parameters.AddWithValue("@IdAnimal",id);
         cmd.Parameters.AddWithValue("@Name", animal.Name);
         cmd.Parameters.AddWithValue("@Desctription", animal.Description);
         cmd.Parameters.AddWithValue("@Category", animal.Category);

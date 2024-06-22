@@ -1,3 +1,6 @@
+using APBD_ZAD5.DTOs;
+using APBD_ZAD5.DTOs.Request;
+using APBD_ZAD5.DTOs.Response;
 using APBD_ZAD5.Models;
 using APBD_ZAD5.Repositories;
 
@@ -12,10 +15,27 @@ public class AnimalServices : IAnimalServices
         _animalRepository = animalRepository;
     }
     
-    public IEnumerable<Animal> GetAnimals(string orderBy)
+    public IEnumerable<GetAnimalsDTO> GetAnimals(string orderBy)
     {
        var animals =  _animalRepository.getAnimals(orderBy);
-       return animals;
+
+       var animalsDTO = new List<GetAnimalsDTO>();
+
+       foreach (var animal in animals)
+       {
+          var newAnimal = new GetAnimalsDTO
+           {
+               Id = animal.IdAnimal,
+               Name = animal.Name,
+               Description = animal.Description,
+               Area = animal.Description,
+               Category = animal.Category
+           };
+          
+          animalsDTO.Add(newAnimal);
+       }
+       
+       return animalsDTO;
     }
 
     public int DeleteAnimal(int id)
@@ -24,13 +44,13 @@ public class AnimalServices : IAnimalServices
         return affectedCount;
     }
 
-    public int UpdateAnimal(Animal animal)
+    public int UpdateAnimal(UpdateAnimalDTO animal, int id)
     {
-        var affectedCount = _animalRepository.UpdateAnimal(animal);
+        var affectedCount = _animalRepository.UpdateAnimal(animal, id);
         return affectedCount;
     }
 
-    public int CreateAnimal(Animal animal)
+    public int CreateAnimal(CreateAnimalDTO animal)
     {
         var affectedCount = _animalRepository.CreateAnimal(animal);
         return affectedCount;
