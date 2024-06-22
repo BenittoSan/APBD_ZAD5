@@ -46,7 +46,7 @@ public class AnimalServices : IAnimalServices
 
     public int UpdateAnimal(UpdateAnimalDTO animal, int id)
     {
-        var affectedCount = _animalRepository.UpdateAnimal(animal, id);
+        var affectedCount = _animalRepository.UpdateAnimal(animal,id);
         return affectedCount;
     }
 

@@ -51,6 +51,9 @@ public class AnimalsController : ControllerBase
     public ActionResult DeleteAniaml(int id)
     {
         var affectedCount = _animalServices.DeleteAnimal(id);
+        
+       // if(affectedCount <= 0)
+        
         return Ok(new {affectedCount});
     }
 
